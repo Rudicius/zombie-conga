@@ -7,6 +7,10 @@ public class ZombieController : MonoBehaviour {
 	public float turnSpeed;
 	private Vector3 moveDirection;
 
+	[SerializeField]
+	private PolygonCollider2D[] colliders;
+	private int currentColliderInder = 0;
+
 
 	// Use this for initialization
 	void Start () {
@@ -38,4 +42,18 @@ public class ZombieController : MonoBehaviour {
 
 	
 	}
+
+	void OnTriggerEnter2D (Collider2D other){
+		Debug.Log("Hit " + other.gameObject);
+	}
+
+	public void SerColliderForSprite(int spriteNum){
+		colliders[currentColliderInder].enabled = false;
+		currentColliderInder = spriteNum;
+		colliders[currentColliderInder].enabled = true;
+	}
+
+
+
+
 }
