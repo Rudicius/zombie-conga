@@ -40,6 +40,8 @@ public class ZombieController : MonoBehaviour {
 		float targetAngle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
 		transform.rotation = Quaternion.Slerp (transform.rotation, Quaternion.Euler(0,0, targetAngle), turnSpeed * Time.deltaTime);
 
+		EnforceBounds ();
+
 	
 	}
 
@@ -51,6 +53,36 @@ public class ZombieController : MonoBehaviour {
 		colliders[currentColliderInder].enabled = false;
 		currentColliderInder = spriteNum;
 		colliders[currentColliderInder].enabled = true;
+	}
+
+	private void EnforceBounds() {
+		//1
+		Vector3 newPosition = transform.position;
+		Camera mainCamera = Camera.main;
+		Vector3 cameraPosition = mainCamera.transform.position;
+
+		//2
+		float xDist = mainCamera.aspect * mainCamera.orthographicSize;
+		float yDist = mainCamera.orthographicSize;
+		float xMax = cameraPosition.x + xDist;
+		float xMin = cameraPosition.x - xDist;
+		float yMax = cameraPosition.y + yDist;
+		float yMin = cameraPosition.y - yDist;
+
+		//3
+		if (newPosition.x < xMin || newPosition.x > xMax) {
+			newPosition.x = Mathf.Clamp(newPosition.x, xMin, xMax);
+			moveDirection.x = -moveDirection.x;
+		}
+
+		//TODO vertical bounds
+		if (newPosition.y < yMin || newPosition.y > yMax) {
+			newPosition.y = Mathf.Clamp(newPosition.y, yMin, yMax);
+			moveDirection.y = -moveDirection.y;
+		}
+
+		//4 
+		transform.position = newPosition;
 	}
 
 
