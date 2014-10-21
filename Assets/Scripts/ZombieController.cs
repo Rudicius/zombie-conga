@@ -46,7 +46,13 @@ public class ZombieController : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D (Collider2D other){
-		Debug.Log("Hit " + other.gameObject);
+
+		if(other.CompareTag("cat")) {
+			Debug.Log("Oops. Stepped on a cat.");
+
+		} else if (other.CompareTag("enemy")) {		
+			Debug.Log("PArdon me, ma'am");
+		}
 	}
 
 	public void SerColliderForSprite(int spriteNum){
