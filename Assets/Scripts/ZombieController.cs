@@ -53,14 +53,20 @@ public class ZombieController : MonoBehaviour {
 	void OnTriggerEnter2D (Collider2D other){
 
 		if(other.CompareTag("cat")) {
-			Debug.Log("Oops. Stepped on a cat.");
+			//Debug.Log("Oops. Stepped on a cat.");
 			Transform followTarget = congaLine.Count == 0 ? transform : congaLine[congaLine.Count-1];
 			//other.GetComponent<CatController>().JoinConga(followTarget, moveSpeed, turnSpeed);
 			other.transform.parent.GetComponent<CatController>().JoinConga(followTarget, moveSpeed, turnSpeed);
 			congaLine.Add(other.transform);
 
 		} else if (other.CompareTag("enemy")) {		
-			Debug.Log("PArdon me, ma'am");
+			//Debug.Log("PArdon me, ma'am");
+			for(int i=0; i < 2 && congaLine.Count > 0; i++) {
+				int lastIdx = congaLine.Count-1;
+				Transform cat = congaLine[ lastIdx ];
+				congaLine.RemoveAt(lastIdx);
+				cat.parent.GetComponent<CatController>().ExitConga();
+			}
 		}
 	}
 

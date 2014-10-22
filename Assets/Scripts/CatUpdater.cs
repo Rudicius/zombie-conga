@@ -23,4 +23,9 @@ public class CatUpdater : MonoBehaviour {
 	void OnBecameInvisible() {
 		catController.OnBecameInvisible();
 	}
+
+	void GrantCatTheSweetReleaseOfDeath() {
+		//DestroyObject(gameObject);
+		catController.GrantCatTheSweetReleaseOfDeath();
+	}
 }
