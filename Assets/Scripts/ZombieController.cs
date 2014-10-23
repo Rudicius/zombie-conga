@@ -4,11 +4,17 @@ using System.Collections.Generic;
 
 public class ZombieController : MonoBehaviour {
 
+	public int congaLineMax = 5;
+	public int lives = 3;
+
 	public float moveSpeed;
 	public float turnSpeed;
 	private Vector3 moveDirection;
 
 	private List<Transform> congaLine = new List<Transform>();
+
+	private bool isInvincible = false;
+	private float timeSpentInvincible;
 
 	[SerializeField]
 	private PolygonCollider2D[] colliders;
@@ -47,6 +53,19 @@ public class ZombieController : MonoBehaviour {
 
 		EnforceBounds ();
 
+		if (isInvincible) {
+			timeSpentInvincible += Time.deltaTime;
+
+			if(timeSpentInvincible < 3f) {
+				float remainder = timeSpentInvincible % .3f;
+				renderer.enabled = remainder > .15f;
+			}
+			else {
+				renderer.enabled = true;
+				isInvincible = false;
+			}
+		}
+
 	
 	}
 
@@ -59,13 +78,25 @@ public class ZombieController : MonoBehaviour {
 			other.transform.parent.GetComponent<CatController>().JoinConga(followTarget, moveSpeed, turnSpeed);
 			congaLine.Add(other.transform);
 
-		} else if (other.CompareTag("enemy")) {		
+			if(congaLine.Count >= congaLineMax) {
+				Debug.Log("You Won!");
+				Application.LoadLevel("CongaScene");
+			}
+
+		} else if (!isInvincible && other.CompareTag("enemy")) {
+			isInvincible = true;
+			timeSpentInvincible = 0;
 			//Debug.Log("PArdon me, ma'am");
 			for(int i=0; i < 2 && congaLine.Count > 0; i++) {
 				int lastIdx = congaLine.Count-1;
 				Transform cat = congaLine[ lastIdx ];
 				congaLine.RemoveAt(lastIdx);
 				cat.parent.GetComponent<CatController>().ExitConga();
+			}
+
+			if(--lives <= 0) {
+				Debug.Log("You lost!");
+				Application.LoadLevel("CongaScene");
 			}
 		}
 	}
